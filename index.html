@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スロットルーレット</title>
+    <style>
+        #word {
+            font-size: 2em;
+            text-align: center;
+            margin: 20px;
+            height: 100px;
+            line-height: 100px;
+            border: 2px solid #000;
+            width: 400px;
+            margin: 20px auto;
+            overflow: hidden;
+            position: relative;
+        }
+        #word span {
+            position: absolute;
+            width: 100%;
+            animation: scroll 1s linear infinite;
+            /* wordの中心に来るように調整 */
+            left: 0;
+            top: -100%;
+
+            font-size: 2em;
+        }
+        /* @keyframes scroll {
+            0% { top: 100%; }
+            100% { top: -100%; }
+        } */
+        #stopButton {
+            display: block;
+            margin: 0 auto;
+            padding: 10px 20px;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <div id="word"><span>準備中...</span></div>
+    <button id="stopButton">STOP</button>
+    <script>
+        // スロットの単語
+        let words = ["カメ","パフェ","お酢","タラバガニ","体操選手","村人","天使の羽","うし","ミミズ","稲刈り","トレンディー",
+        "ミートソーススパゲティ","ネコ","いらっしゃいませ"];
+        let slot = true;
+
+        function scroll() {
+            // 0.1秒ごとに#word spanのtopを1%加算
+            // 100%になったらtopを-100%に戻す
+
+            // #word spanのtopを取得
+            let top = parseInt(document.querySelector('#word span').style.top) || 0;
+
+            // topが0のときスロットを止める
+            if (top === 0 && !slot) {
+                return;
+            }
+            // topを2%加算
+            top += 2;
+
+            
+
+            // topが100%になったら-100%に戻す
+            if (top >= 100) {
+                top = -100;
+                // ランダムな単語を#word spanにセット
+                document.querySelector('#word span').textContent = words[Math.floor(Math.random() * words.length)];
+                
+            }
+            // topを#word spanにセット
+            document.querySelector('#word span').style.top = top + '%';
+
+            // 0.0001秒後にscroll()を実行
+            setTimeout(scroll, 0.1);
+        }
+
+        // scroll()を実行
+        scroll();
+
+        function slotToggler() {
+            if (slot) {
+                // スロットを止める
+                slot = false;
+                // ボタンのテキストを"START"に変更
+                document.querySelector('#stopButton').textContent = 'START';
+            } else {
+                // スロットを再開
+                slot = true;
+                // ボタンのテキストを"STOP"に変更
+                document.querySelector('#stopButton').textContent = 'STOP';
+                // scroll()を実行
+                scroll();
+            }
+        }
+
+        // #stopButtonをクリックしたときslotToggler()を実行
+        document.querySelector('#stopButton').addEventListener('click', slotToggler);
+
+    </script>
+</body>
+</html>
